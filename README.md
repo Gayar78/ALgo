@@ -17,10 +17,22 @@ This code will be organized into three Java classes:
 1. `DeliveryPerson`
 2. `Order`
 3. `GPS`
----------------------------------------------------------------------------------------------------------------------------
+
 
 ## ADVENT OF CODE 2022
 
----------------------------------------------------------------------------------------------------------------------------
+It was my first encounter with this type of problem-solving.  
+This experience made me aware of my potential for further improvement.  
+The complexity of these exercises escalates rapidly, often leading me to dedicate entire weekends to comprehend certain solutions found online.
+
+- Exercises not done : 1 -> 7  
+- Exercises done : 8 -> 22  
+
+
 
 ## ADVENT OF CODE 2023
+
+This year, I was much more comfortable solving this type of problem since I had practiced a lot for those of the previous year.  
+Therefore, I was able to tackle many more exercises from the previous year.  
+
+- Exercises done : 1 -> 25 (maybe)
