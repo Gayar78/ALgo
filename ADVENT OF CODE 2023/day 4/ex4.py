@@ -1,63 +1,95 @@
 import re
 from collections import defaultdict
-D = open("donne4.txt").read().strip()
-D = "1: 1 2 3 | 2 3 4\n2: 2 3 4 | 3 4 5\n3: 3 4 5 | 4 5 6"
+
+# Read the content of the "data4.txt" file and store it in the variable D
+D = open("data4.txt").read().strip()
 lines = D.split('\n')
 p1 = 0
 N = defaultdict(int)
-for i,line in enumerate(lines):
-  N[i] += 1
-  #Pour comprendre la partie 2
-  print(f"keys_{i} += 1")
-  print("")
-  print(N)
-  print(N.values())
-  first, rest = line.split('|')
-  id_, card = first.split(':')
-  card_nums = [int(x) for x in card.split()]
-  rest_nums = [int(x) for x in rest.split()]
-  val = len(set(card_nums) & set(rest_nums))
-  if val > 0:
-    p1 += 2**(val-1)
-  for j in range(val):
-    N[i+1+j] += N[i]
-    #Pour comprendre comment se déroule la partie 2
-    print(f"key_{i+1+j} += {N[i]}")
-print("")
-print(N)
-print(N.values())
-print("")
+
+# Iterate through each line in the file
+for i, line in enumerate(lines):
+    N[i] += 1
+
+    # Print statements for understanding part 2
+    '''
+    print(f"keys_{i} += 1")
+    print("")
+    print(N)
+    print(N.values())
+    '''
+
+    # Split the line into the first part and the rest
+    first, rest = line.split('|')
+    id_, card = first.split(':')
+    card_nums = [int(x) for x in card.split()]
+    rest_nums = [int(x) for x in rest.split()]
+    val = len(set(card_nums) & set(rest_nums))
+
+    # Calculate part 1
+    if val > 0:
+        p1 += 2**(val-1)
+
+    # Calculate part 2 and update dictionary
+    for j in range(val):
+        N[i+1+j] += N[i]
+        '''
+        # Print statements to understand part 2
+        print(f"key_{i+1+j} += {N[i]}")
+    print("")
+    print(N)
+    print(N.values())
+    print("")
+    '''
+
+# Display the result for part 1
 print(p1)
-print(sum(N.values())) # partie 2
+
+# Display the result for part 2 (sum of all values in the dictionary)
+print(sum(N.values()))
 
 '''
-C'est un système de bonus que chaque sous ticket attribut à chaque ticket supérieur
+PART 1:
+If we have:
+1: 1 2 3 | 2 3 4
+2: 2 3 4 | 3 4 5
+3: 3 4 5 | 4 5 6
 
-ma sous clée 0 est incrémente de 1 pour trouver => clée0 : 1
-donc j'ajoute donc 1 à clée 1, et 1 à clée 2
-DONC 
-clée 0 : 1
-clée 1 : 1
-clée 2 : 1
+Then,
+ticket 1: wins 2
+ticket 2: wins 2
+ticket 3: wins 2
 
-j'incrémente ma clée 1 de 1 pour trouver => clée1 : 2
-donc j'ajoute 2 à clée 2, et 2 à clée 3
-DONC
-clée 0 : 1
-clée 1 : 2
-clée 2 : 3
-clée 3 : 2
+2 + 2 + 2 = 6
 
-j'incrémente clée 2 de 1 pour trouver => clée2 : 4
-donc j'ajoute 4 à clée 3, et 4 à la nouvelle clée 4 (spécial puisqu'elle n'est pas sensée exister, on a juste besoin de ses points)
-DONC
-clée 0 : 1
-clée 1 : 2
-clée 2 : 4
-clée 3 : 6
-clée 4 : 4
+PART 2:
+It is a bonus system that each sub-ticket attributes to each higher ticket.
 
+My sub-key 0 is incremented by 1 to find => key 0: 1
+so I add 1 to key 1, and 1 to key 2
+SO
+key 0: 1
+key 1: 1
+key 2: 1
 
-la somme des clées donne 17
-c'est bien le nombre qu'on devait trouver
+I increment my key 1 by 1 to find => key 1: 2
+so I add 2 to key 2, and 2 to key 3
+SO
+key 0: 1
+key 1: 2
+key 2: 3
+key 3: 2
+
+I increment key 2 by 1 to find => key 2: 4
+so I add 4 to key 3, and 4 to the new key 4 (special since it is not supposed to exist, we just need its points)
+SO
+key 0: 1
+key 1: 2
+key 2: 4
+key 3: 6
+key 4: 4
+
+the sum of the keys gives 17
+it is indeed the number we were supposed to find
 '''
+
