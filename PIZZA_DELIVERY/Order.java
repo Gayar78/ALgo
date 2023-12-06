@@ -3,7 +3,7 @@ public class Order {
     private int restTime;
 
     /**
-     * Constructor for an Order.
+     * Constructor for an Order..
      *
      * @param GPScoordinates The GPS coordinates of the order.
      * @param restTime       The remaining time for the order to be delivered.

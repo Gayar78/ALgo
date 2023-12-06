@@ -1,41 +1,68 @@
 import java.util.ArrayList;
 import model.*;
 
-public class TestMainDist {
+public class testMainDist {
     public static void main(String[] args) {
-        // Create a list of delivery addresses.
-        GPS first = new GPS(/*co1*/, /*co2*/);//double values x , y // latitude , longitude 
-        GPS second = new GPS(/*co3*/, /*co4*/);
-        GPS third = new GPS(/*co5*/, /*co6*/);
-        GPS fourth = new GPS(/*co6*/, /*co7*/);
+        // Create a list of delivery addresses..
+        GPS Samuel = new GPS(48.79, 2.15);
+        GPS Pierre1 = new GPS(48.74, 2.11);
+        GPS Pierre2 = new GPS(48.74, 2.11);
+        GPS Buc = new GPS(48.77, 2.12);
 
-        //double distancePierreSamuel = pierre1.distanceKM(samuel);
+        //double distancePierreSamuel = Pierre1.distanceKM(Samuel);
         //System.out.println(distancePierreSamuel+"km between Pierre and Samuel (bird flight)");
 
-        // Create a list of orders.
-        ArrayList<Order> orders = new ArrayList<>();
-        Order order1 = new Order(first, 10);//int values
-        Order order2 = new Order(second, 5);
-        Order order3 = new Order(third, 4);
-        Order order4 = new Order(fourth, 3);
-        orders.add(order1);
-        orders.add(order2);
-        orders.add(order3);
-        orders.add(order4);
+        // Create a list of Orders.
+        ArrayList<Order> Orders = new ArrayList<>();
+        Order Order1 = new Order(Samuel, 10);
+        Order Order2 = new Order(Pierre1, 5);
+        Order Order3 = new Order(Pierre2, 4);
+        Order Order4 = new Order(Buc, 3);
+        Orders.add(Order1);
+        Orders.add(Order2);
+        Orders.add(Order3);
+        Orders.add(Order4);
 
-        // Create a delivery person.
-        DeliveryPerson deliveryPerson = new DeliveryPerson(1, "John", "Doe", true);
-        //id = 1
-        //lastName = John
-        //fistName = Doe
-        //available = true
 
-        // Get the best delivery addresses.
-        ArrayList<GPS> deliveredAddresses = deliveryPerson.bestDelivery(orders, new GPS(/*coPIZZA_x*/, /*coPIZZA_y*/));
-
-        // Print the addresses in the correct order
+        // Create a delivery man for the test of the bestDelivery method.
+        DeliveryMan deliveryMan = new DeliveryMan(1, "John", "Doe", true);
+        System.out.println(" ");
+        System.out.println("REDUCTIONLESS DELIVERY WITH FAST BACK");
+        // Get the best delivery patern in deliveryAddresses
+        ArrayList<GPS> deliveredAddresses = deliveryMan.bestDelivery(Orders, new GPS(48.73, 2.08));
+        // Print the delivered addresses.
         for (GPS deliveredAddress : deliveredAddresses) {
             System.out.println(deliveredAddress);
         }
+        System.out.println(" ");
+        System.out.println("------------------------------------------------");
+
+
+        //Creat a delivery man for the test of the fast delivery method.
+        DeliveryMan deliveryMan2 = new DeliveryMan(2, "Jane", "Doe", true);
+        System.out.println(" ");
+        System.out.println("FAST DELIVERY WITH FAST BACK");
+        // Get the fastest delivery patern in deliveryAddresses2
+        ArrayList<GPS> deliveredAddresses2 = deliveryMan2.FastDelivery(Orders, new GPS(48.73, 2.08));
+        // Print the delivered addresses.
+        for (GPS deliveredAddress : deliveredAddresses2) {
+            System.out.println(deliveredAddress);
+        }
+        System.out.println(" ");
+        System.out.println("------------------------------------------------");
+
+
+        //Creat a delivery man for the test of the rest_time delivery method.
+        DeliveryMan deliveryMan3 = new DeliveryMan(2, "Joe", "Doe", true);
+        System.out.println(" ");
+        System.out.println("FAST DELIVERY WITH FAST BACK");
+        // Get the best restTime delivery patern in deliveryAddresses3
+        ArrayList<GPS> deliveredAddresses3 = deliveryMan2.RestTimeDelivery(Orders, new GPS(48.73, 2.08));
+        // Print the delivered addresses.
+        for (GPS deliveredAddress : deliveredAddresses3) {
+            System.out.println(deliveredAddress);
+        }
+        System.out.println(" ");
+        System.out.println("------------------------------------------------");
     }
 }

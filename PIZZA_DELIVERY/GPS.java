@@ -3,7 +3,7 @@ public class GPS {
     private double y;
 
     /**
-     * Constructor for GPS coordinates.
+     * Constructor for GPS coordinates..
      *
      * @param x The x-coordinate.
      * @param y The y-coordinate.

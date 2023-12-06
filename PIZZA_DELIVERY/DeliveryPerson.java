@@ -1,114 +1,129 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
-public class DeliveryPerson {
-    private int idDP;
-    private String lastNameDP;
-    private String firstNameDP;
+public class DeliveryMan {
+    private int idDM;
+    private String nameDM;
+    private String lastNameDM;
     private boolean available;
-    private final int STORAGE_DP = 5;
+    private final int STORAGE_DM = 5;
     private final int AVGspeed = 45;
 
-    /**
-     * Constructor for a DeliveryPerson.
-     *
-     * @param id         The unique identifier for the delivery person.
-     * @param lastName   The last name of the delivery person.
-     * @param firstName  The first name of the delivery person.
-     * @param available  The availability status of the delivery person.
-     */
-    public DeliveryPerson(int id, String lastName, String firstName, boolean available) {
-        this.idDP = id;
-        this.lastNameDP = lastName;
-        this.firstNameDP = firstName;
+    public DeliveryMan(int id, String name, String lastName, boolean available) {
+        this.idDM = id;
+        this.nameDM = name;
+        this.lastNameDM = lastName;
         this.available = available;
     }
-
-    /**
-     * Get the unique identifier of the delivery person.
-     *
-     * @return The unique identifier.
-     */
-    public int getIdDP() {
-        return this.idDP;
+    public int getIdDM(){
+        return this.idDM;
     }
-
-    /**
-     * Get the last name of the delivery person.
-     *
-     * @return The last name.
-     */
-    public String getLastName() {
-        return this.lastNameDP;
+    public String getNom(){
+        return this.nameDM;
     }
-
-    /**
-     * Get the first name of the delivery person.
-     *
-     * @return The first name.
-     */
-    public String getFirstName() {
-        return this.firstNameDP;
+    public String getPrenom(){
+        return this.lastNameDM;
     }
-
-    /**
-     * Check the availability status of the delivery person.
-     *
-     * @return True if available, false otherwise.
-     */
-    public boolean getAvailable() {
+    public boolean getAvailable(){
         return this.available;
     }
-
-    /**
-     * Toggle the availability status of the delivery person.
-     */
-    public void changeAvailable() {
+    public void changeAvailable(){
         this.available = !this.available;
     }
-
-    /**
-     * String representation of the DeliveryPerson object.
-     *
-     * @return A string representation of the object.
-     */
-    @Override
     public String toString() {
-        return "DeliveryPerson [idDP=" + idDP + ", lastNameDP=" + lastNameDP + ", firstNameDP=" + firstNameDP + ", available=" + available + "]";
+        return "DeliveryMan [idDM=" + idDM + ", nameDM=" + nameDM + ", lastNameDM=" + lastNameDM + ", available=" + available + "]";
+    }
+    //######## BEST DELIVERY ########
+    public ArrayList<GPS> bestDelivery(ArrayList<Order> Orders, GPS position) {
+        return bestDeliveryRecursive(new ArrayList<>(Orders), position, 0);
     }
 
-    /**
-     * Determine the best delivery route for the delivery person based on orders and current position.
-     *
-     * @param orders   The list of orders to be delivered.
-     * @param position The current GPS position of the delivery person.
-     * @return An ArrayList of GPS coordinates representing the optimized delivery route.
-     */
-    public ArrayList<GPS> bestDelivery(ArrayList<Order> orders, GPS position) {
-        // Create a copy of the orders list to avoid modifying the original
-        ArrayList<Order> ordersCopy = new ArrayList<>(orders);
-
-        // Calculate the distance between the delivery person's current position and all GPS coordinates of the orders
-        ordersCopy.sort(Comparator.comparingDouble(order -> position.distanceKM(order.getGPS())));
-
-        // Select orders based on distance and remaining time
-        ArrayList<GPS> sortedGPS = new ArrayList<>();
-        double remainingTime = 0;
-
-        for (Order order : ordersCopy) {
-            double distance = position.distanceKM(order.getGPS());
-            double deliveryTime = distance / AVGspeed * 60; // Delivery time in minutes
-            remainingTime += order.getRestTime();
-
-            // Check if the order can be delivered before its remaining time reaches zero
-            if (remainingTime <= deliveryTime) {
-                sortedGPS.add(order.getGPS());
-            } else {
-                break; // Exit the loop if the order cannot be delivered on time
-            }
+    private ArrayList<GPS> bestDeliveryRecursive(List<Order> Orders, GPS position, double elapsedTime) {
+        if (Orders.isEmpty()) {
+            return new ArrayList<>(); // no more Orders to deliver
         }
+        Orders.sort(Comparator.comparingDouble(Order -> position.distanceKM(Order.getGPS())));
+        Order nextOrder = Orders.get(0);
+        double distance = position.distanceKM(nextOrder.getGPS());
+        double deliveryTime = distance / AVGspeed * 60; // Temps de livraison en minutes
+        double remainingTime = nextOrder.getRestTime() - elapsedTime;
+        /* DEBUG
+        System.out.println("Temps restant: " + formatDouble(remainingTime, 2));
+        System.out.println("Temps de livraison: " + formatDouble(deliveryTime, 2));
+        */
+        ArrayList<GPS> result = new ArrayList<>();
+        if (remainingTime > 0) {
+            // the Order can't be delivered on time
+            result.add(nextOrder.getGPS());
+            // create a new list of Orders without the first one
+            List<Order> remainingOrders = new ArrayList<>(Orders.subList(1, Orders.size()));
 
-        return sortedGPS;
+            // recution to iterate on the remaining Orders
+            ArrayList<GPS> remainingDelivery = bestDeliveryRecursive(remainingOrders, nextOrder.getGPS(), elapsedTime + deliveryTime);
+            result.addAll(remainingDelivery);
+        } else {
+            // the Order cannot be delivered on time
+            result.addAll(bestDeliveryRecursive(Orders.subList(1, Orders.size()), position, elapsedTime));
+            result.add(nextOrder.getGPS());
+        }
+        return result;
+    }
+
+    //######## FAST DELIVERY ########
+    public ArrayList<GPS> FastDelivery(ArrayList<Order> Orders, GPS position) {
+        ArrayList<Order> copie = new ArrayList<>(Orders);
+        ArrayList<GPS> result = new ArrayList<>();
+        while (!copie.isEmpty()) {
+            int minDistanceIndex = 0;
+            double minDistance = Double.MAX_VALUE;
+            for (int i = 0; i < copie.size(); i++) {
+                double distance = position.distanceKM(copie.get(i).getGPS());
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    minDistanceIndex = i;
+                }
+            }
+            result.add(copie.get(minDistanceIndex).getGPS());
+            position = copie.get(minDistanceIndex).getGPS(); // value update for the next iteration
+            copie.remove(minDistanceIndex);
+        }
+        return result;
+    }
+
+    //######## REST_TIME DELIVERY #########
+    public ArrayList<GPS> RestTimeDelivery(ArrayList<Order> Orders, GPS position) {
+        ArrayList<Order> copie = new ArrayList<>(Orders);
+        ArrayList<GPS> result = new ArrayList<>();
+        while (!copie.isEmpty()) {
+            int minTimeIndex = 0;
+            double minTime = Double.MAX_VALUE;
+            for (int i = 0; i < copie.size(); i++) {
+                double time = copie.get(i).getRestTime();
+                if (time < minTime) {
+                    minTime = time;
+                    minTimeIndex = i;
+                }
+            }
+            result.add(copie.get(minTimeIndex).getGPS());
+            position = copie.get(minTimeIndex).getGPS(); // value update for the next iteration
+            copie.remove(minTimeIndex);
+        }
+        return result;
+    }
+    //-------------------------------------------------------------------------
+
+    //######## UTILS (DEBUG) ########
+    //Arround float number to 2 decimal if : decimalPlaces = 2
+    //Exemple : 2.123456789 -> 2.12
+    public static String formatDouble(double number, int decimalPlaces) {
+        StringBuilder patternBuilder = new StringBuilder("#.");
+        for(int i = 0; i < decimalPlaces; i++) {
+            patternBuilder.append("#");
+        }
+        String pattern = patternBuilder.toString();
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        return decimalFormat.format(number);
     }
 }
