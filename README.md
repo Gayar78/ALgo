@@ -36,3 +36,10 @@ This year, I was much more comfortable solving this type of problem since I had 
 Therefore, I was able to tackle many more exercises from the previous year.  
 
 - Exercises done : 1 -> 25 (maybe)
+
+
+## Prog in C
+  
+Two programs, both doing the same thing:
+- **FUSION** performs a merge sort on 10,000 numbers ranging from `1` to `10,000` _(1; 2; 3; ... ; 9,999; 10,000)_.
+- **FUSIONPP** performs a merge sort on 1,000,000,000 numbers ranging from `1` to `1,000,000,000`
